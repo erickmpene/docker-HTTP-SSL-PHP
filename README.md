@@ -20,11 +20,11 @@ CMD ["/usr/sbin/init"]
 ```sh
 docker build --rm -t local/c7-systemd .
 ```
-#### 3. First Create your keys
+#### 2. First Create your keys
 ```sh
 openssl req -new -newkey rsa:2048 -days 365 -nodes -x509 -keyout MyKey.key -out MyKey.crt
 ```
-#### 4. Now you can use the image you created previously for our image
+#### 3. Now you can use the image you created previously for our image
 ```sh
 FROM local/c7-systemd
 
