@@ -5,6 +5,5 @@ logs/
 .cache
 Dockerfile
 
-.dockerignore 
-
-
+.dockerignore
+.gitignore
