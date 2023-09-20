@@ -20,7 +20,7 @@ CMD ["/usr/sbin/init"]
 ```sh
 docker build --rm -t local/c7-systemd .
 ```
-#### 2. Example systemd enabled app container
+#### 2. systemd enabled app container
 ```sh
 FROM local/c7-systemd
 RUN yum -y install httpd; yum clean all; systemctl enable httpd.service
@@ -30,9 +30,11 @@ CMD ["/usr/sbin/init"]
 ```sh
 docker build --rm -t local/c7-systemd-httpd .
 ```
-
-
 #### 3. First Create your keys
 ```sh
 openssl req -new -newkey rsa:2048 -days 365 -nodes -x509 -keyout MyKey.key -out MyKey.crt
+```
+#### 4. Now you can use the image you created previously
+```sh
+
 ```
