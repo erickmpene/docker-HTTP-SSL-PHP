@@ -24,7 +24,7 @@ docker build --rm -t local/c7-systemd .
 ```sh
 openssl req -new -newkey rsa:2048 -days 365 -nodes -x509 -keyout MyKey.key -out MyKey.crt
 ```
-#### 3. Now you can use the image you created previously for our image
+#### 3. Now we can use the image you created previously for our image
 ```sh
 FROM local/c7-systemd
 
@@ -46,3 +46,12 @@ COPY biggy /var/www/html
 
 CMD apachectl -DFOREGROUND
 ```
+#### 4. Build your image
+```sh
+docker build -t MyImage:v1 .
+```
+##### 5. Run container
+```sh
+docker run --name MyContainer -d -p 443:443 MyImage:v1
+```
+#### Enjoy ! d(-_-)b
