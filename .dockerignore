@@ -1,0 +1,6 @@
+.git
+logs/
+.log 
+*.md
+.cache
+Dockerfile
