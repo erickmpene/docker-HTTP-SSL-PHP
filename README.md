@@ -2,57 +2,34 @@
 
 #### For this project I used a centos image based on systemd. The image to use must be built from the centos:7 image. For more details, you can go to the Docker Hub to see instructions for building a systemd-based centos image.
 
+#### For creating a centos image with systemd, you can use docker-compose v3 or use each Dockerfile in the build-1 and build-2 folder. 
+
+### A. With Dockerfile
 #### 1. Dockerfile for systemd base image
 ```sh
-FROM centos:7
-ENV container docker
-RUN (cd /lib/systemd/system/sysinit.target.wants/; for i in *; do [ $i == \
-systemd-tmpfiles-setup.service ] || rm -f $i; done); \
-rm -f /lib/systemd/system/multi-user.target.wants/*;\
-rm -f /etc/systemd/system/*.wants/*;\
-rm -f /lib/systemd/system/local-fs.target.wants/*; \
-rm -f /lib/systemd/system/sockets.target.wants/*udev*; \
-rm -f /lib/systemd/system/sockets.target.wants/*initctl*; \
-rm -f /lib/systemd/system/basic.target.wants/*;\
-rm -f /lib/systemd/system/anaconda.target.wants/*;
-VOLUME [ "/sys/fs/cgroup" ]
-CMD ["/usr/sbin/init"]
-```
-```sh
-docker build --rm -t local/c7-systemd .
+docker build -t local/c7-systemd -f build-1/Dockerfile .
 ```
 #### 2. First Create your keys
 ```sh
+cd build-2
 openssl req -new -newkey rsa:2048 -days 365 -nodes -x509 -keyout MyKey.key -out MyKey.crt
 ```
-#### 3. Now we can use the image you created previously for our image
+/!\ To create the keys, when the prompt asks you for the "Common Name", you will need to enter either the private/public IP address or the domain name of the server.
+
+#### 3. Now we can use the image you created previously for build your image
 ```sh
-FROM local/c7-systemd
-
-RUN yum -y install \
-      httpd \
-      php \
-      mod_ssl \
-      openssl \
-      php-mysql; \
-      yum clean all; \
-      systemctl enable httpd.service
-
-COPY MyKey.key /etc/pki/tls/private
-COPY MyKey.crt /etc/pki/tls/certs
-COPY ssl.conf /etc/httpd/conf.d/default.conf
-
-EXPOSE 80
-COPY biggy /var/www/html
-
-CMD apachectl -DFOREGROUND
+cd ../
+docker build -t myimage:v1 -f build-2/Dockerfile .
 ```
-#### 4. Build your image
+##### 5. Run container to test image
 ```sh
-docker build -t MyImage:v1 .
+docker run --name mycontainer -d -p 443:443 myimage:v1
 ```
-##### 5. Run container
+### B. With docker-compose v3
+just run :
 ```sh
-docker run --name MyContainer -d -p 443:443 MyImage:v1
+docker compose up -d 
 ```
+Know that docker will also create containers for the build-1 and build-2 services
+
 #### Enjoy ! d(-_-)b

@@ -1,0 +1,28 @@
+version: '3'
+services:
+  build-1:
+    build:
+      context: ./build-1
+      dockerfile: Dockerfile
+    image: local/c7-systemd
+
+  build-2:
+    image: myimage:v1
+    build: 
+      context: .
+      dockerfile: ./build-2/Dockerfile
+    depends_on:
+      - build-1
+
+  run-container:
+    image: myimage:v1
+    ports:
+      - "443:443"
+    volumes:
+      - data:/var/www/html
+    command: apachectl -DFOREGROUND
+    depends_on:
+      - build-2
+
+volumes:
+  data:
